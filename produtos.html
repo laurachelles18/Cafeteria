@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio & Produtos | SoHo Coffee Co.</title>
+    
+    <!-- Google Fonts Editorial -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #F9F8F6;      
+            --accent-wood: #C59B6C;    
+            --brown-coffee: #6E473B;  
+            --text-dark: #1A1A1A;      
+            --border-light: #E5E2DC;   
+            --card-bg: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: 'Space Mono', monospace;
+            padding: 0 20px 30px 20px;
+            line-height: 1.6;
+        }
+
+        .container-wide { width: 100%; max-width: 1280px; margin: 0 auto; }
+
+        .top-nav-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(249, 248, 246, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--border-light);
+            margin-bottom: 35px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .top-nav a { color: var(--brown-coffee); text-decoration: none; transition: color 0.2s ease; }
+        .top-nav a:hover { color: var(--accent-wood); }
+
+        .cart-trigger-btn {
+            background: var(--brown-coffee);
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .cart-trigger-btn:hover { background: var(--accent-wood); }
+
+        .cart-count-badge {
+            background: #FFFFFF;
+            color: var(--brown-coffee);
+            font-weight: bold;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .sidebar-info {
+            position: sticky;
+            top: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            border-right: 1px solid var(--border-light);
+            padding-right: 25px;
+        }
+
+        .sidebar-brand h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            line-height: 1;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .sidebar-brand .tagline {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--accent-wood);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .sidebar-widget { border-bottom: 1px solid var(--border-light); padding-bottom: 20px; }
+        .sidebar-widget:last-child { border-bottom: none; }
+
+        .widget-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--brown-coffee);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .widget-list { list-style: none; padding: 0; margin: 0; font-size: 0.72rem; color: #555; }
+        .widget-list li { margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .widget-list li span.highlight { color: var(--brown-coffee); font-weight: bold; }
+
+        .btn-main-custom {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--brown-coffee);
+            color: #FFFFFF;
+            border: 1px solid var(--brown-coffee);
+            padding: 12px 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-main-custom:hover { background-color: var(--accent-wood); border-color: var(--accent-wood); color: #FFFFFF; }
+
+        .search-filter-box { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-input-wrapper { position: relative; flex-grow: 1; }
+        .search-input-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--accent-wood); font-size: 0.8rem; }
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        main { display: flex; flex-direction: column; gap: 35px; }
+        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--brown-coffee); margin-bottom: 6px; }
+        .section-desc { font-size: 0.8rem; color: #666; }
+
+        .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; }
+        .filter-btn {
+            font-family: 'Space Mono', monospace;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            padding: 6px 14px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            color: var(--text-dark);
+        }
+
+        .filter-btn:hover, .filter-btn.active { background-color: var(--brown-coffee); color: #FFF; border-color: var(--brown-coffee); }
+
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card:hover { border-color: var(--accent-wood); box-shadow: 0 8px 20px rgba(110, 71, 59, 0.08); transform: translateY(-3px); }
+        .product-img-wrapper { position: relative; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background-color: #F3F1ED; }
+        .product-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .product-img-wrapper img { transform: scale(1.06); }
+
+        .product-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(26, 26, 26, 0.85); backdrop-filter: blur(4px);
+            color: var(--accent-wood); font-size: 0.58rem; padding: 4px 10px;
+            letter-spacing: 1px; text-transform: uppercase; border-radius: 3px; font-weight: 700;
+        }
+
+        .product-card-body { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; background: #FFFFFF; }
+        .product-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; line-height: 1.2; }
+        .product-desc { font-size: 0.72rem; color: #666; margin-bottom: 16px; line-height: 1.5; display: -webkit-box; 
+        ; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .product-footer-flex { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-light); margin-top: auto; }
+        .product-price { font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--brown-coffee); }
+
+        .btn-order-item {
+            background: transparent; border: 1px solid var(--border-light); color: var(--brown-coffee);
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; transition: all 0.2s ease; cursor: pointer;
+        }
+        .product-card:hover .btn-order-item { background: var(--brown-coffee); color: #FFFFFF; border-color: var(--brown-coffee); }
+
+        /* Offcanvas / Carrinho */
+        .cart-offcanvas { background-color: var(--bg-color); border-left: 1px solid var(--border-light); width: 420px !important; }
+        .cart-header { border-bottom: 1px dashed var(--border-light); padding: 20px; }
+        .cart-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--brown-coffee); margin: 0; }
+        .cart-body { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .cart-items-list { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; max-height: calc(100vh - 430px); padding-right: 5px; }
+        .cart-item-single { background: #FFFFFF; border: 1px solid var(--border-light); border-radius: 4px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+        .cart-item-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--text-dark); margin: 0 0 2px 0; }
+        .cart-item-opts { font-size: 0.62rem; color: #888; margin-bottom: 4px; }
+        .cart-item-price { font-size: 0.8rem; font-weight: bold; color: var(--brown-coffee); }
+
+        .cart-qty-ctrl { display: flex; align-items: center; gap: 8px; background: var(--bg-color); border: 1px solid var(--border-light); border-radius: 20px; padding: 2px 8px; }
+        .cart-qty-btn { background: none; border: none; color: var(--text-dark); cursor: pointer; font-size: 0.7rem; }
+        .cart-qty-num { font-size: 0.72rem; font-weight: bold; }
+
+        .order-type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px; }
+        .order-type-btn { background: #FFFFFF; border: 1px solid var(--border-light); padding: 6px 4px; font-size: 0.6rem; text-transform: uppercase; border-radius: 4px; cursor: pointer; text-align: center; color: #555; }
+        .order-type-btn.active { background: var(--brown-coffee); color: #FFF; border-color: var(--brown-coffee); }
+
+        .coupon-box { display: flex; gap: 6px; margin-bottom: 15px; }
+        .coupon-input { flex-grow: 1; background: #FFFFFF; border: 1px solid var(--border-light); padding: 6px 12px; font-family: 'Space Mono', monospace; font-size: 0.68rem; border-radius: 4px; text-transform: uppercase; }
+        .coupon-btn { background: var(--accent-wood); color: #FFF; border: none; padding: 0 12px; font-size: 0.65rem; text-transform: uppercase; border-radius: 4px; cursor: pointer; }
+
+        .cart-summary { border-top: 1px dashed var(--border-light); padding-top: 15px; margin-top: 15px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.72rem; color: #666; margin-bottom: 6px; }
+        .summary-row.total { font-size: 1rem; font-weight: bold; color: var(--brown-coffee); border-top: 1px solid var(--border-light); padding-top: 8px; margin-top: 8px; }
+
+        /* Modal */
+        .custom-modal .modal-content { background: var(--bg-color); border: 1px solid var(--border-light); border-radius: 6px; }
+        .modal-product-img { width: 100%; height: 240px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; }
+        .option-group-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--brown-coffee); margin: 15px 0 8px 0; border-bottom: 1px solid var(--border-light); padding-bottom: 4px; }
+        .option-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; background: #FFFFFF; padding: 8px 12px; border: 1px solid var(--border-light); border-radius: 4px; }
+        .option-item label { cursor: pointer; margin: 0; flex-grow: 1; }
+
+        .toast-container-custom { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast-custom { background: var(--text-dark); color: #FFF; border-left: 4px solid var(--accent-wood); padding: 12px 20px; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; }
+
+        footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-light); text-align: center; font-size: 0.65rem; letter-spacing: 2px; color: #888; }
+
+        @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 992px) { .page-layout { grid-template-columns: 1fr; } .sidebar-info { position: relative; top: 0; border-right: none; border-bottom: 1px solid var(--border-light); padding-right: 0; padding-bottom: 30px; } }
+        @media (max-width: 576px) { .products-grid { grid-template-columns: 1fr; } .cart-offcanvas { width: 100% !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="container-wide">
+        <!-- BARRA NAVEGAÇÃO SUPERIOR -->
+        <div class="top-nav-wrapper">
+            <nav class="top-nav">
+                <span><i class="fa-solid fa-location-dot"></i> São Paulo — Jardins</span>
+                <div>
+                    <a href="index.html" class="me-3"><i class="fa-solid fa-arrow-left me-1"></i> Voltar ao Início</a>
+                    <a href="compra.html" class="me-3"><i class="fa-solid fa-clock-rotate-left me-1"></i> Meus Pedidos</a>
+                    
+                    <button class="cart-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                        <i class="fa-solid fa-bag-shopping"></i> Pedido
+                        <span class="cart-count-badge" id="cartBadgeCount">0</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <div class="page-layout">
+            <!-- SIDEBAR ESQUERDA -->
+            <aside class="sidebar-info">
+                <div class="sidebar-brand">
+                    <h1>SoHo Menu</h1>
+                    <p class="tagline">Café Especial & Confeitaria</p>
+                </div>
+
+                <a href="compra.html" class="btn-main-custom">
+                    <i class="fa-solid fa-receipt"></i> Acompanhar Compra
+                </a>
+
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">Cozinha & Bar</h3>
+                    <ul class="widget-list">
+                        <li><span>Espresso Bar</span> <span class="highlight">Até 20:00</span></li>
+                        <li><span>Cozinha/Brunch</span> <span class="highlight">Até 19:00</span></li>
+                        <li><span>Opções Veganas</span> <span class="highlight">Disponíveis</span></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">Origem do Café</h3>
+                    <p style="font-size: 0.72rem; color: #555;">
+                        Grãos 100% Arábica de torra média selecionados diretamente do Sul de Minas.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- CONTEÚDO PRINCIPAL -->
+            <main>
+                <div class="section-header">
+                    <h2 class="section-title">Nosso Cardápio</h2>
+                    <p class="section-desc">Seleção de cafés especiais, bebidas geladas, pães de fermentação natural e doces diários.</p>
+                </div>
+
+                <!-- PESQUISA -->
+                <div class="search-filter-box">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar por café, bagel, matcha..." onkeyup="searchProducts()">
+                    </div>
+                </div>
+
+                <!-- FILTROS -->
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="filterProducts('all', this)">Todos</button>
+                    <button class="filter-btn" onclick="filterProducts('cafes', this)">Cafés Quentes</button>
+                    <button class="filter-btn" onclick="filterProducts('gelados', this)">Gelados & Cold Brew</button>
+                    <button class="filter-btn" onclick="filterProducts('brunch', this)">Salgados & Brunch</button>
+                    <button class="filter-btn" onclick="filterProducts('doces', this)">Doces & Confeitaria</button>
+                </div>
+
+                <!-- GRID DE PRODUTOS -->
+                <div id="productsContainer" class="products-grid">
+
+                    <div class="product-card product-item" data-category="cafes" data-id="1" data-name="Flat White Double" data-price="16.00" onclick="openProductModal(1)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Clássico SoHo</span>
+                            <img src="img/comida.jpg" alt="Flat White Double">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">Flat White Double</h3>
+                                <p class="product-desc">Dose dupla de espresso artesanal com leite vaporizado em textura aveludada.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 16,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(1, 'Flat White Double', 16.00, 'img/Cafe.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card product-item" data-category="cafes" data-id="2" data-name="V60 Drip Coffee" data-price="18.00" onclick="openProductModal(2)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Filtrado artesanal</span>
+                            <img src="img/açai.jpg" alt="V60 Drip Coffee">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">V60 Drip Coffee</h3>
+                                <p class="product-desc">Café especial extraído no método V60 com grãos de notas florais e frutadas.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 18,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(2, 'V60 Drip Coffee', 18.00, 'img/Кафе «Астер», г_ Санкт-Петербург.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card product-item" data-category="gelados" data-id="3" data-name="SoHo Cold Brew" data-price="18.00" onclick="openProductModal(3)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Assinatura</span>
+                            <img src="img/Current obsession_ avocado toast.jpg" alt="SoHo Cold Brew">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">SoHo Cold Brew</h3>
+                                <p class="product-desc">Café extraído a frio por 18 horas, servido com gelo esférico e zeste de laranja.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 18,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(3, 'SoHo Cold Brew', 18.00, 'img/Aesthetic coffee shop in SoHo.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card product-item" data-category="brunch" data-id="6" data-name="NYC Bagel Cream Cheese" data-price="26.00" onclick="openProductModal(6)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Estilo NYC</span>
+                            <img src="img/download8.jpg" alt="NYC Bagel Cream Cheese">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">NYC Bagel Cream Cheese</h3>
+                                <p class="product-desc">Bagel artesanal grelhado com bastante cream cheese e azeite de ervas.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 26,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(6, 'NYC Bagel Cream Cheese', 26.00, 'img/coffee shop.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card product-item" data-category="brunch" data-id="7" data-name="Avocado Toast Original" data-price="32.00" onclick="openProductModal(7)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Mais Pedido</span>
+                            <img src="img/download9.jpg" alt="Avocado Toast Original">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">Avocado Toast Original</h3>
+                                <p class="product-desc">Toast de pão sourdough, creme de abacate temperado e ovos pouchê.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 32,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(7, 'Avocado Toast Original', 32.00, 'img/Cafe, interior design.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card product-item" data-category="doces" data-id="9" data-name="New York Cheesecake" data-price="24.00" onclick="openProductModal(9)">
+                        <div class="product-img-wrapper">
+                            <span class="product-badge">Tradicional</span>
+                            <img src="img/Cafe.jpg" alt="New York Cheesecake">
+                        </div>
+                        <div class="product-card-body">
+                            <div>
+                                <h3 class="product-title">New York Cheesecake</h3>
+                                <p class="product-desc">Autêntico cheesecake nova-iorquino denso e cremoso com calda de amora.</p>
+                            </div>
+                            <div class="product-footer-flex">
+                                <span class="product-price">R$ 24,00</span>
+                                <button class="btn-order-item" onclick="event.stopPropagation(); addToCartDirect(9, 'New York Cheesecake', 24.00, 'img/Cafe.jpg')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 SoHo Coffee Co. & Livraria - Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- GAVETA DO CARRINHO -->
+    <div class="offcanvas offcanvas-end cart-offcanvas" tabindex="-1" id="cartOffcanvas">
+        <div class="cart-header d-flex justify-content-between align-items-center">
+            <h5 class="cart-title"><i class="fa-solid fa-bag-shopping me-2"></i> Seu Pedido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="cart-body">
+            <div>
+                <span style="font-size: 0.65rem; color: var(--accent-wood); font-weight: bold; text-transform: uppercase;">Tipo de Consumo</span>
+                <div class="order-type-selector mt-1">
+                    <button class="order-type-btn active" onclick="setOrderType('Mesa 04 (Salão)', this)">No Balcão</button>
+                    <button class="order-type-btn" onclick="setOrderType('Retirada (Takeaway)', this)">Retirada</button>
+                    <button class="order-type-btn" onclick="setOrderType('Delivery Jardins', this)">Delivery</button>
+                </div>
+
+                <div class="cart-items-list" id="cartItemsList"></div>
+            </div>
+
+            <div>
+                <div class="coupon-box mt-3">
+                    <input type="text" id="couponInput" class="coupon-input" placeholder="Cupom (SOHO10)">
+                    <button class="coupon-btn" onclick="applyCoupon()">Aplicar</button>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">R$ 0,00</span></div>
+                    <div class="summary-row" id="discountRow" style="display: none; color: #2e7d32;"><span>Desconto</span><span id="summaryDiscount">- R$ 0,00</span></div>
+                    <div class="summary-row"><span>Taxa (10%) <input type="checkbox" id="serviceTaxCheck" checked onchange="renderCart()"></span><span id="summaryTax">R$ 0,00</span></div>
+                    <div class="summary-row total"><span>Total</span><span id="summaryTotal">R$ 0,00</span></div>
+                </div>
+
+                <button class="btn-main-custom mt-3" style="padding: 14px;" onclick="checkoutAndRedirect()">
+                    <i class="fa-solid fa-check me-1"></i> Finalizar & Acompanhar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade custom-modal" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0"><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body pt-0" id="modalProductContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let cart = [];
+        let discountPercent = 0;
+        let selectedOrderType = 'Mesa 04 (Salão)';
+
+        const productsDatabase = {
+            1: { id: 1, name: "Flat White Double", price: 16.00, img: "img/comida.jpg", desc: "Dose dupla de espresso com leite vaporizado em textura aveludada.", options: [{ title: "Escolha o Leite", type: "radio", items: [{ label: "Leite Integral", price: 0 }, { label: "Leite de Aveia Orgânico", price: 4 }] }] },
+            2: { id: 2, name: "V60 Drip Coffee", price: 18.00, img: "img/açai.jpg", desc: "Café especial extraído no método V60.", options: [] },
+            3: { id: 3, name: "SoHo Cold Brew", price: 18.00, img: "img/Current obsession_ avocado toast.jpg", desc: "Extração lenta a frio por 18 horas.", options: [] },
+            6: { id: 6, name: "NYC Bagel Cream Cheese", price: 26.00, img: "img/download8.jpg", desc: "Bagel artesanal fervido e assado no dia.", options: [] },
+            7: { id: 7, name: "Avocado Toast Original", price: 32.00, img: "img/download9.jpg", desc: "Toast de massa sourdough grelhada.", options: [] },
+            9: { id: 9, name: "New York Cheesecake", price: 24.00, img: "img/Cafe.jpg", desc: "Fatia de cheesecake com calda de amora.", options: [] }
+        };
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.product-item').forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function filterProducts(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.style.display = (category === 'all' || item.getAttribute('data-category') === category) ? 'flex' : 'none';
+            });
+        }
+
+        function openProductModal(id) {
+            const product = productsDatabase[id];
+            if (!product) return;
+
+            let optionsHTML = '';
+            if (product.options) {
+                product.options.forEach((group, index) => {
+                    optionsHTML += `<div class="option-group-title">${group.title}</div>`;
+                    group.items.forEach((item, itemIdx) => {
+                        optionsHTML += `
+                            <div class="option-item">
+                                <label for="opt_${id}_${index}_${itemIdx}">${item.label}</label>
+                                <input type="${group.type}" id="opt_${id}_${index}_${itemIdx}" name="grp_${index}" value="${item.price}" data-label="${item.label}">
+                            </div>`;
+                    });
+                });
+            }
+
+            document.getElementById('modalProductContent').innerHTML = `
+                <img src="${product.img}" class="modal-product-img">
+                <h3>${product.name}</h3>
+                <span style="font-weight:bold; color:var(--brown-coffee)">R$ ${product.price.toFixed(2)}</span>
+                <p style="font-size:0.75rem; color:#666;">${product.desc}</p>
+                <form id="customForm_${id}">${optionsHTML}</form>
+                <button class="btn-main-custom mt-3" onclick="addCustomizedToCart(${id})">Adicionar ao Pedido</button>
+            `;
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
+        function addCustomizedToCart(id) {
+            const product = productsDatabase[id];
+            let extraPrice = 0;
+            let chosenOptions = [];
+
+            const form = document.getElementById(`customForm_${id}`);
+            form.querySelectorAll('input:checked').forEach(input => {
+                extraPrice += parseFloat(input.value || 0);
+                chosenOptions.push(input.getAttribute('data-label'));
+            });
+
+            cart.push({
+                cartItemId: Date.now(),
+                name: product.name,
+                price: product.price + extraPrice,
+                img: product.img,
+                options: chosenOptions.length > 0 ? chosenOptions.join(' • ') : 'Padrão',
+                qty: 1
+            });
+
+            bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+            renderCart();
+            showToast(`${product.name} adicionado!`);
+        }
+
+        function addToCartDirect(id, name, price, img) {
+            cart.push({ cartItemId: Date.now(), name, price, img, options: 'Padrão', qty: 1 });
+            renderCart();
+            showToast(`${name} adicionado!`);
+        }
+
+        function updateQty(cartItemId, delta) {
+            const item = cart.find(i => i.cartItemId === cartItemId);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(i => i.cartItemId !== cartItemId);
+            renderCart();
+        }
+
+        function setOrderType(type, btn) {
+            selectedOrderType = type;
+            document.querySelectorAll('.order-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function applyCoupon() {
+            if (document.getElementById('couponInput').value.trim().toUpperCase() === 'SOHO10') {
+                discountPercent = 0.10;
+                document.getElementById('discountRow').style.display = 'flex';
+                showToast('Cupom de 10% aplicado!');
+                renderCart();
+            }
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cartItemsList');
+            let subtotal = 0, totalQty = 0;
+
+            if (cart.length === 0) {
+                list.innerHTML = `<p style="text-align:center; padding: 20px; font-size:0.75rem; color:#888;">Seu pedido está vazio.</p>`;
+            } else {
+                let html = '';
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.qty;
+                    subtotal += itemTotal;
+                    totalQty += item.qty;
+                    html += `
+                        <div class="cart-item-single">
+                            <img src="${item.img}" class="cart-item-img">
+                            <div class="cart-item-info">
+                                <h4 class="cart-item-name">${item.name}</h4>
+                                <div class="cart-item-opts">${item.options}</div>
+                                <span class="cart-item-price">R$ ${itemTotal.toFixed(2)}</span>
+                            </div>
+                            <div class="cart-qty-ctrl">
+                                <button class="cart-qty-btn" onclick="updateQty(${item.cartItemId}, -1)">-</button>
+                                <span class="cart-qty-num">${item.qty}</span>
+                                <button class="cart-qty-btn" onclick="updateQty(${item.cartItemId}, 1)">+</button>
+                            </div>
+                        </div>`;
+                });
+                list.innerHTML = html;
+            }
+
+            document.getElementById('cartBadgeCount').innerText = totalQty;
+            const discountVal = subtotal * discountPercent;
+            const taxVal = document.getElementById('serviceTaxCheck').checked ? (subtotal - discountVal) * 0.10 : 0;
+            const totalFinal = (subtotal - discountVal) + taxVal;
+
+            document.getElementById('summarySubtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('summaryDiscount').innerText = `- R$ ${discountVal.toFixed(2)}`;
+            document.getElementById('summaryTax').innerText = `R$ ${taxVal.toFixed(2)}`;
+            document.getElementById('summaryTotal').innerText = `R$ ${totalFinal.toFixed(2)}`;
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast-custom';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle" style="color:var(--accent-wood)"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function checkoutAndRedirect() {
+            if (cart.length === 0) {
+                alert('Adicione itens ao carrinho antes de finalizar!');
+                return;
+            }
+
+            const orderData = {
+                orderId: 'SOHO-' + Math.floor(1000 + Math.random() * 9000),
+                orderType: selectedOrderType,
+                items: cart,
+                subtotal: document.getElementById('summarySubtotal').innerText,
+                tax: document.getElementById('summaryTax').innerText,
+                total: document.getElementById('summaryTotal').innerText,
+                status: 'Em Preparo'
+            };
+
+            localStorage.setItem('sohoActiveOrder', JSON.stringify(orderData));
+            window.location.href = 'compra.html';
+        }
+    </script>
+</body>
+</html>
